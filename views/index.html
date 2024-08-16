@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+        form { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { margin-bottom: 10px; padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <form id="shorten-form">
+        <input type="text" id="original-url" placeholder="Enter URL to shorten" required>
+        <button type="submit">Shorten URL</button>
+        <p id="short-url"></p>
+    </form>
+    <script>
+        document.getElementById('shorten-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const originalUrl = document.getElementById('original-url').value;
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ originalUrl })
+            });
+            const data = await response.json();
+            if (data.shortUrl) {
+                document.getElementById('short-url').textContent = `Short URL: ${window.location.origin}/${data.shortUrl.split('/').pop()}`;
+            } else {
+                document.getElementById('short-url').textContent = 'Error shortening URL';
+            }
+        });
+    </script>
+</body>
+</html>
